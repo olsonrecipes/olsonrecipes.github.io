@@ -1,17 +1,20 @@
 /* Layout: a recipe box. Chapters are divider tabs across the top; each recipe
-   is a ruled index card (blue rules, red header line) set on the counter. */
+   is a ruled index card (faded rules, red header line) set on a wooden
+   counter, with a strip of gingham along the top. */
 :root {
-  --counter: #e7ebef;    /* page background: the counter the cards sit on */
-  --card: #ffffff;       /* index card stock */
-  --ink: #23262b;
-  --muted: #646b75;
-  --rule: #cddbeb;       /* index-card blue rule */
-  --redline: #d8645b;    /* index-card red header line */
-  --accent: #a2322c;     /* links and headings */
-  --pencil: #2c5dab;     /* best guesses, as if penciled in */
-  --tab: #f4f6f8;
-  --tab-edge: #c3ccd6;
-  --shadow: rgba(28, 38, 52, 0.10);
+  --counter: #e8d9c0;    /* page background: the butcher-block counter the cards sit on */
+  --grain: rgba(122, 78, 36, 0.05);  /* wood grain on the counter */
+  --card: #fffaf0;       /* cream index card stock */
+  --ink: #3b2b20;
+  --muted: #7b6553;
+  --rule: #e5d6bf;       /* index-card rule, faded with age */
+  --redline: #cf6d4f;    /* index-card red header line */
+  --accent: #9b3a22;     /* links and headings: brick */
+  --pencil: #33598f;     /* best guesses, as if penciled in */
+  --tab: #f4e9d6;
+  --tab-edge: #d6c2a3;
+  --check: rgba(196, 74, 52, 0.5);  /* gingham */
+  --shadow: rgba(92, 58, 24, 0.14);
   --font-display: "Fraunces", Georgia, "Times New Roman", serif;
   --font-body: "Crimson Pro", Georgia, "Times New Roman", serif;
   --font-pencil: "Patrick Hand", "Segoe Print", "Comic Sans MS", cursive;
@@ -20,24 +23,36 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --counter: #131619; --card: #1d2127; --ink: #e8e6e1; --muted: #a1a8b2;
-    --rule: #2b394a; --redline: #b8564f; --accent: #ef8b80; --pencil: #93b8ff;
-    --tab: #22272e; --tab-edge: #39424e; --shadow: rgba(0, 0, 0, 0.45);
+    --counter: #1d1611; --grain: rgba(255, 220, 180, 0.025); --card: #2a2119;
+    --ink: #f1e6d6; --muted: #bba68f; --rule: #40322a; --redline: #c26a4e;
+    --accent: #f0a27f; --pencil: #a3bfe9; --tab: #261d16; --tab-edge: #4b3c30;
+    --check: rgba(214, 102, 76, 0.38); --shadow: rgba(0, 0, 0, 0.5);
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --counter: #131619; --card: #1d2127; --ink: #e8e6e1; --muted: #a1a8b2;
-  --rule: #2b394a; --redline: #b8564f; --accent: #ef8b80; --pencil: #93b8ff;
-  --tab: #22272e; --tab-edge: #39424e; --shadow: rgba(0, 0, 0, 0.45);
+  --counter: #1d1611; --grain: rgba(255, 220, 180, 0.025); --card: #2a2119;
+  --ink: #f1e6d6; --muted: #bba68f; --rule: #40322a; --redline: #c26a4e;
+  --accent: #f0a27f; --pencil: #a3bfe9; --tab: #261d16; --tab-edge: #4b3c30;
+  --check: rgba(214, 102, 76, 0.38); --shadow: rgba(0, 0, 0, 0.5);
   color-scheme: dark;
+}
+/* Wood grain: faint vertical streaks, so the sticky header can repeat it
+   and stay lined up with the page behind. */
+:root {
+  --wood:
+    repeating-linear-gradient(90deg, var(--grain) 0 1px, transparent 1px 7px),
+    repeating-linear-gradient(90deg, transparent 0 13px, var(--grain) 13px 15px, transparent 15px 41px);
+  --gingham:
+    repeating-linear-gradient(90deg, var(--check) 0 8px, transparent 8px 16px),
+    repeating-linear-gradient(180deg, var(--check) 0 8px, transparent 8px 16px);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  background: var(--counter);
+  background: var(--wood), var(--counter);
   color: var(--ink);
   font: 400 1.1875rem/1.5 var(--font-body);
 }
@@ -65,12 +80,16 @@ h1, h2, h3 { text-wrap: balance; }
 html { scroll-padding-top: calc(var(--mast-h, 10rem) + 0.75rem); }
 .masthead {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
-  background: var(--counter); transition: box-shadow 0.2s, transform 0.25s ease;
+  background: var(--wood), var(--counter); transition: box-shadow 0.2s, transform 0.25s ease;
 }
 .masthead.is-stuck { box-shadow: 0 6px 16px -10px var(--shadow); }
 .masthead.is-hidden { transform: translateY(calc(-100% - env(safe-area-inset-top, 0px))); box-shadow: none; }
 @media (prefers-reduced-motion: reduce) { .masthead { transition: none; } }
-.top { background: var(--card); border-bottom: 1px solid var(--tab-edge); }
+.top {
+  background-color: var(--card); background-image: var(--gingham);
+  background-size: 100% 16px; background-repeat: no-repeat;
+  padding-top: 16px; border-bottom: 1px solid var(--tab-edge);
+}
 .top-inner {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center;
   gap: 0.5rem 1.25rem; padding-block: 0.6rem;
@@ -84,8 +103,8 @@ html { scroll-padding-top: calc(var(--mast-h, 10rem) + 0.75rem); }
 .search { position: relative; grid-column: 1 / -1; }
 .search input {
   width: 100%; font: 400 1rem var(--font-ui); color: var(--ink);
-  background: var(--counter); border: 1px solid var(--tab-edge); border-radius: 6px;
-  padding: 0.55rem 0.75rem;
+  background: var(--tab); border: 1px solid var(--tab-edge); border-radius: 999px;
+  padding: 0.55rem 1rem;
 }
 .search input::placeholder { color: var(--muted); }
 .results {
@@ -166,12 +185,16 @@ html { scroll-padding-top: calc(var(--mast-h, 10rem) + 0.75rem); }
   box-shadow: 0 1px 2px var(--shadow), 0 4px 14px var(--shadow);
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.mini:hover { transform: translateY(-2px); box-shadow: 0 2px 4px var(--shadow), 0 10px 24px var(--shadow); }
+/* Cards set down by hand: never quite square. */
+.mini-grid li:nth-child(3n+1) .mini { transform: rotate(-0.5deg); }
+.mini-grid li:nth-child(3n+2) .mini { transform: rotate(0.35deg); }
+.mini-grid li:nth-child(4n+3) .mini { transform: rotate(-0.25deg); }
+.mini-grid li:nth-child(n) .mini:hover { transform: translateY(-3px); box-shadow: 0 2px 4px var(--shadow), 0 12px 26px var(--shadow); }
 .mini-title { font: 600 1.15rem/1.25 var(--font-body); padding-bottom: 0.35rem; border-bottom: 1px solid var(--redline); }
 .mini-by, .has-card { line-height: 1.7rem; border-bottom: 1px solid var(--rule); }
 .mini-by { font-style: italic; color: var(--muted); }
 .has-card { font-family: var(--font-pencil); color: var(--pencil); }
-@media (prefers-reduced-motion: reduce) { .mini { transition: none; } .mini:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .mini { transition: none; } .mini-grid li:nth-child(n) .mini:hover { transform: none; } }
 
 /* ---------- recipe card ---------- */
 .crumb { margin: 0 0 0.6rem; font: 500 0.95rem var(--font-ui); }
@@ -192,7 +215,7 @@ html { scroll-padding-top: calc(var(--mast-h, 10rem) + 0.75rem); }
 .meta dd { margin: 0; }
 .tools { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.8rem; margin-bottom: 1.1rem; }
 .tool {
-  font: 500 0.88rem var(--font-ui); color: var(--ink); background: var(--counter);
+  font: 500 0.88rem var(--font-ui); color: var(--ink); background: var(--tab);
   border: 1px solid var(--tab-edge); border-radius: 999px; padding: 0.35rem 0.85rem; cursor: pointer;
 }
 .tool[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--card); }
@@ -285,7 +308,9 @@ html { scroll-padding-top: calc(var(--mast-h, 10rem) + 0.75rem); }
 .lock[hidden] { display: none; }
 .lock-card {
   width: min(100%, 22rem); display: grid; gap: 0.6rem;
-  background: var(--card); padding: 1.6rem 1.4rem 1.4rem; border-radius: 6px;
+  background-color: var(--card); background-image: var(--gingham);
+  background-size: 100% 16px; background-repeat: no-repeat;
+  padding: calc(16px + 1.5rem) 1.4rem 1.4rem; border-radius: 6px;
   box-shadow: 0 1px 2px var(--shadow), 0 8px 24px -12px var(--shadow);
 }
 .lock-card .lock-brand {
@@ -294,7 +319,7 @@ html { scroll-padding-top: calc(var(--mast-h, 10rem) + 0.75rem); }
 }
 .lock-card label { font: 500 0.95rem var(--font-ui); color: var(--muted); }
 .lock-card input {
-  font: 400 1rem var(--font-ui); color: var(--ink); background: var(--counter);
+  font: 400 1rem var(--font-ui); color: var(--ink); background: var(--tab);
   border: 1px solid var(--tab-edge); border-radius: 6px; padding: 0.6rem 0.75rem;
 }
 .lock-card button {
