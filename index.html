@@ -30,14 +30,14 @@ input:focus-visible, button:focus-visible { outline:2px solid var(--brick); outl
 <body>
 <form id="f" autocomplete="on">
   <h1>Recipes from the <i>Olsons</i></h1>
-  <p>A collection of family recipes across the generations. Enter the family password to come in.</p>
+  <p>Enter the Family Name</p>
   <label for="pw">Password</label>
   <input id="pw" type="password" autocomplete="current-password" required>
   <button type="submit" id="go">Open the cookbook</button>
   <div id="err" role="alert"></div>
 </form>
 <script>
-const META = {"s": "Ye4DVrLtvNefeL7A5JCOTw==", "n": 600000, "v": "61ee0356"};
+const META = {"s": "pgrJPTkdYIlb3YqcJk9y9w==", "n": 600000, "v": "a60ac93d"};
 const b64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
 const STORE = 'olson-table-key';
 let bookPromise = null;
